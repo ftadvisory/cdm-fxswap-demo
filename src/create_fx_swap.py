@@ -424,8 +424,6 @@ def main ():
     event = create_trade_business_event()
     print('writing business event')
     Path("fx_swap_business_event.json").write_text(event.rune_serialize(indent=3), encoding="utf-8")
-    event_json = Path("fx_swap_business_event.json").read_text()
-    event_new = BaseDataClass.rune_deserialize (event_json)
     results = extract_info_from_event(event)
     print('trade date:', results['trade_date'])
     print('effective date:', results['economic_terms'].effectiveDate.adjustableDate.adjustedDate)

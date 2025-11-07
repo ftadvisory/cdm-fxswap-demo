@@ -1,0 +1,350 @@
+{
+   "@type": "cdm.event.common.BusinessEvent",
+   "@model": "cdm",
+   "@version": "0.0.0",
+   "eventDate": "2025-10-30",
+   "effectiveDate": "2025-10-30",
+   "instruction": [
+      {
+         "primitiveInstruction": {
+            "execution": {
+               "product": {
+                  "taxonomy": [
+                     {
+                        "source": "ISDA",
+                        "productQualifier": "ForeignExchange_Spot_Forward"
+                     }
+                  ],
+                  "economicTerms": {
+                     "effectiveDate": {
+                        "adjustableDate": {
+                           "adjustedDate": {
+                              "@data": "2025-11-04"
+                           }
+                        }
+                     },
+                     "terminationDate": {
+                        "adjustableDate": {
+                           "adjustedDate": {
+                              "@data": "2025-11-28"
+                           }
+                        }
+                     },
+                     "payout": [
+                        {
+                           "SettlementPayout": {
+                              "payerReceiver": {
+                                 "payer": "Party1",
+                                 "receiver": "Party2"
+                              },
+                              "priceQuantity": {
+                                 "quantitySchedule": {
+                                    "value": "2796548.83000000007450580596923828125",
+                                    "unit": {
+                                       "currency": {
+                                          "@data": "EUR"
+                                       }
+                                    }
+                                 },
+                                 "priceSchedule": [
+                                    {
+                                       "@type": "cdm.observable.asset.Price",
+                                       "value": "178.791799999999994952304405160248279571533203125",
+                                       "unit": {
+                                          "currency": {
+                                             "@data": "EURJPY"
+                                          }
+                                       },
+                                       "perUnitOf": {
+                                          "currency": {
+                                             "@data": "EUR"
+                                          }
+                                       },
+                                       "priceType": "ExchangeRate",
+                                       "priceExpression": "AbsoluteTerms"
+                                    }
+                                 ]
+                              },
+                              "settlementTerms": {
+                                 "settlementType": "Physical",
+                                 "settlementDate": {
+                                    "valueDate": "2025-11-04"
+                                 },
+                                 "physicalSettlementTerms": {
+                                    "physicalSettlementPeriod": {
+                                       "businessDays": 0
+                                    }
+                                 }
+                              },
+                              "underlier": {
+                                 "Observable": {
+                                    "Asset": {
+                                       "Cash": {
+                                          "identifier": [
+                                             {
+                                                "identifier": {
+                                                   "@data": "EUR"
+                                                },
+                                                "identifierType": "CurrencyCode"
+                                             }
+                                          ]
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        },
+                        {
+                           "SettlementPayout": {
+                              "payerReceiver": {
+                                 "payer": "Party2",
+                                 "receiver": "Party1"
+                              },
+                              "priceQuantity": {
+                                 "quantitySchedule": {
+                                    "value": "2799994.16999999992549419403076171875",
+                                    "unit": {
+                                       "currency": {
+                                          "@data": "EUR"
+                                       }
+                                    }
+                                 },
+                                 "priceSchedule": [
+                                    {
+                                       "@type": "cdm.observable.asset.Price",
+                                       "value": "178.57179999999999608917278237640857696533203125",
+                                       "unit": {
+                                          "currency": {
+                                             "@data": "EURJPY"
+                                          }
+                                       },
+                                       "perUnitOf": {
+                                          "currency": {
+                                             "@data": "EUR"
+                                          }
+                                       },
+                                       "priceType": "ExchangeRate",
+                                       "priceExpression": "AbsoluteTerms"
+                                    }
+                                 ]
+                              },
+                              "settlementTerms": {
+                                 "settlementType": "Physical",
+                                 "settlementDate": {
+                                    "valueDate": "2025-11-28"
+                                 },
+                                 "physicalSettlementTerms": {
+                                    "physicalSettlementPeriod": {
+                                       "businessDays": 0
+                                    }
+                                 }
+                              },
+                              "underlier": {
+                                 "Observable": {
+                                    "Asset": {
+                                       "Cash": {
+                                          "identifier": [
+                                             {
+                                                "identifier": {
+                                                   "@data": "EUR"
+                                                },
+                                                "identifierType": "CurrencyCode"
+                                             }
+                                          ]
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     ]
+                  }
+               },
+               "priceQuantity": [
+                  {
+                     "price": [
+                        {
+                           "@type": "cdm.observable.asset.Price",
+                           "value": "178.791799999999994952304405160248279571533203125",
+                           "unit": {
+                              "currency": {
+                                 "@data": "EUR"
+                              }
+                           },
+                           "perUnitOf": {
+                              "currency": {
+                                 "@data": "EUR"
+                              }
+                           },
+                           "priceType": "ExchangeRate",
+                           "priceExpression": "AbsoluteTerms"
+                        }
+                     ],
+                     "quantity": [
+                        {
+                           "value": "2796548.83000000007450580596923828125",
+                           "unit": {
+                              "currency": {
+                                 "@data": "EUR"
+                              }
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "price": [
+                        {
+                           "@type": "cdm.observable.asset.Price",
+                           "value": "178.57179999999999608917278237640857696533203125",
+                           "unit": {
+                              "currency": {
+                                 "@data": "EUR"
+                              }
+                           },
+                           "perUnitOf": {
+                              "currency": {
+                                 "@data": "EUR"
+                              }
+                           },
+                           "priceType": "ExchangeRate",
+                           "priceExpression": "AbsoluteTerms"
+                        }
+                     ],
+                     "quantity": [
+                        {
+                           "value": "2799994.16999999992549419403076171875",
+                           "unit": {
+                              "currency": {
+                                 "@data": "EUR"
+                              }
+                           }
+                        }
+                     ]
+                  }
+               ],
+               "counterparty": [
+                  {
+                     "role": "Party1",
+                     "partyReference": {
+                        "partyId": [
+                           {
+                              "identifier": {
+                                 "@data": "BigBank"
+                              }
+                           }
+                        ],
+                        "name": {
+                           "@data": "BigBank"
+                        }
+                     }
+                  },
+                  {
+                     "role": "Party2",
+                     "partyReference": {
+                        "partyId": [
+                           {
+                              "identifier": {
+                                 "@data": "Client"
+                              }
+                           }
+                        ],
+                        "name": {
+                           "@data": "Client"
+                        }
+                     }
+                  }
+               ],
+               "parties": [
+                  {
+                     "partyId": [
+                        {
+                           "identifier": {
+                              "@data": "BigBank"
+                           }
+                        }
+                     ],
+                     "name": {
+                        "@data": "BigBank"
+                     }
+                  },
+                  {
+                     "partyId": [
+                        {
+                           "identifier": {
+                              "@data": "Client"
+                           }
+                        }
+                     ],
+                     "name": {
+                        "@data": "Client"
+                     }
+                  }
+               ],
+               "partyRoles": [
+                  {
+                     "partyReference": {
+                        "partyId": [
+                           {
+                              "identifier": {
+                                 "@data": "BigBank"
+                              }
+                           }
+                        ],
+                        "name": {
+                           "@data": "BigBank"
+                        }
+                     },
+                     "role": "Buyer"
+                  },
+                  {
+                     "partyReference": {
+                        "partyId": [
+                           {
+                              "identifier": {
+                                 "@data": "Client"
+                              }
+                           }
+                        ],
+                        "name": {
+                           "@data": "Client"
+                        }
+                     },
+                     "role": "Seller"
+                  }
+               ],
+               "executionDetails": {
+                  "executionType": "OffFacility",
+                  "executionVenue": {
+                     "entityId": [
+                        {
+                           "@data": "OTC"
+                        }
+                     ],
+                     "name": {
+                        "@data": "OTC"
+                     }
+                  }
+               },
+               "tradeDate": {
+                  "@data": "2025-10-30"
+               },
+               "tradeIdentifier": [
+                  {
+                     "issuer": {
+                        "@data": "NA"
+                     },
+                     "assignedIdentifier": [
+                        {
+                           "identifier": {
+                              "@data": "xxx-abcdef"
+                           }
+                        }
+                     ],
+                     "identifierType": "UniqueTransactionIdentifier"
+                  }
+               ]
+            }
+         }
+      }
+   ]
+}
