@@ -2,7 +2,7 @@
 
 An example of generating CDM v6 for an FX Swap using Python.
 
-* Instructions
+## Instructions
 
 1. [Recommended] - create and activate a virtual Python enviroment
 
@@ -19,7 +19,7 @@ python -m pip install resources/rune_runtime-1.0.18-py3-none-any.whl resources/p
 python src/create_fx_swap.py
 ```
 
-* Notes
+## Notes
 
 The CDM implementation has overridden sections in _bundle.py
 
