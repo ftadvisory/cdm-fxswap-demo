@@ -1,7 +1,7 @@
 '''demo of creating an fx swap trade using the python implementation of CDM v6
 created by FT Advisory info@ftadvisory.co
 v1.0, 06-Nov-2025
-License: Apache License 2.0
+License: MIT
 
 set DEBUG to be true to see the results of all validations.  otherwise only errors are reported.
 
@@ -83,7 +83,6 @@ from cdm.event.common.State import State
 from cdm.event.common.Trade import Trade
 from cdm.event.common.TradeIdentifier import TradeIdentifier
 from cdm.event.common.TradeState import TradeState
-from cdm.event.position.PositionStatusEnum import PositionStatusEnum
 from cdm.event.workflow.EventTimestampQualificationEnum import EventTimestampQualificationEnum
 from cdm.event.workflow.Workflow import Workflow
 from cdm.observable.asset.Observable import Observable
@@ -101,7 +100,6 @@ from cdm.product.template.EconomicTerms import EconomicTerms
 from cdm.product.template.NonTransferableProduct import NonTransferableProduct
 from cdm.product.template.Payout import Payout
 from cdm.product.template.SettlementPayout import SettlementPayout
-from cdm.product.template.TradeLot import TradeLot
 from cdm.product.template.Underlier import Underlier
 from pydantic import ValidationError
 from rune.runtime.conditions import ConditionViolationError
@@ -116,8 +114,8 @@ PRODUCT_ID = StrWithMeta("FX_SWAP")
 EXECUTION_TYPE = StrWithMeta("OFF_FACILITY")
 EXECUTION_ENTITY = StrWithMeta("OTC")
 TRADE_DATE = datetime.datetime(2025, 10, 30) 
-SPOT_SETTLE_DATE = datetime.datetime(2025, 11, 4) 
-FWD_SETTLE_DATE = datetime.datetime(2025,11,28) 
+SPOT_SETTLE_DATE = datetime.datetime(2025, 11, 4)
+FWD_SETTLE_DATE = datetime.datetime(2025,11,28)
 SPOT_EU_AMT = 2796548.83 
 FWD_EU_AMT = 2799994.17 
 JPY_AMT_SPOT = 500000000 
@@ -129,6 +127,16 @@ FWD_FX_RATE = 178.5718
 CURRENCY = StrWithMeta("EURJPY")
 BASE_FX = StrWithMeta("EUR")
 TRANSACTION_UTI = StrWithMeta("xxx-abcdef")
+
+def create_party(name: StrWithMeta):
+    '''create a party'''
+    return Party(name=name,
+                 partyId=[PartyIdentifier(identifier=name, identifierType=None)],
+                 businessUnit=None,
+                 person=None,
+                 personRole=None,
+                 account=None,
+                 contactInformation=None)
 
 def create_price_quantity(fx_rate: float,fx_quantity: float) -> PriceQuantity:
     '''create price quantity'''
@@ -311,37 +319,26 @@ def create_trade_business_event() -> BusinessEvent:
     validate_pydantic_object(execution_details)
     spot_price_quantity = create_price_quantity(fx_rate=SPOT_FX_RATE,fx_quantity=SPOT_EU_AMT)
     fwd_price_quantity = create_price_quantity(fx_rate=FWD_FX_RATE,fx_quantity=FWD_EU_AMT)
-    parties = [Party(name=PARTY1_NAME,
-                     partyId=[PartyIdentifier(identifier=PARTY1_NAME, identifierType=None)],
-                     businessUnit=None,
-                     person=None,
-                     personRole=None,
-                     account=None,
-                     contactInformation=None),
-               Party(name=PARTY2_NAME, 
-                     partyId=[PartyIdentifier(identifier=PARTY2_NAME, identifierType=None)],
-                     businessUnit=None,
-                     person=None,
-                     personRole=None,
-                     account=None,
-                     contactInformation=None)
-               ]
-    validate_pydantic_list (parties)
-    party_roles = [PartyRole(partyReference=parties[0],
-                             role=PartyRoleEnum.BUYER,
-                             ownershipPartyReference=None),
-                   PartyRole(partyReference=parties[1],
-                             role=PartyRoleEnum.SELLER,
-                             ownershipPartyReference=None)
+
+    party_roles = [
+        PartyRole(partyReference=create_party(PARTY1_NAME),
+                  role=PartyRoleEnum.BUYER,
+                  ownershipPartyReference=None),
+        PartyRole(partyReference=create_party(PARTY2_NAME),
+                  role=PartyRoleEnum.SELLER,
+                  ownershipPartyReference=None)
                    ]
     validate_pydantic_list (party_roles)
-    counterparties = [Counterparty(role=CounterpartyRoleEnum.PARTY_1,partyReference=parties[0]),
-                      Counterparty(role=CounterpartyRoleEnum.PARTY_2,partyReference=parties[1])]
+
+    counterparties = [
+        Counterparty(role=CounterpartyRoleEnum.PARTY_1,partyReference=create_party(PARTY1_NAME)),
+        Counterparty(role=CounterpartyRoleEnum.PARTY_2,partyReference=create_party(PARTY2_NAME))
+        ]
     validate_pydantic_list(counterparties)
     execution_instruction = ExecutionInstruction(product=product,
                                                  priceQuantity=[spot_price_quantity,fwd_price_quantity],
                                                  counterparty=counterparties,
-                                                 parties=parties,
+                                                 parties=[create_party(PARTY1_NAME), create_party(PARTY2_NAME)],
                                                  partyRoles=party_roles,
                                                  executionDetails=execution_details,
                                                  tradeDate=DateWithMeta(TRADE_DATE),
@@ -423,7 +420,9 @@ def main ():
     print('creating business event')
     event = create_trade_business_event()
     print('writing business event')
-    Path("fx_swap_business_event.json").write_text(event.rune_serialize(indent=3), encoding="utf-8")
+    event_json = event.rune_serialize(indent=3)
+    Path("fx_swap_business_event.json").write_text(event_json, encoding="utf-8")
+    BaseDataClass.rune_deserialize(event_json, strict=False)
     results = extract_info_from_event(event)
     print('trade date:', results['trade_date'])
     print('effective date:', results['economic_terms'].effectiveDate.adjustableDate.adjustedDate)
