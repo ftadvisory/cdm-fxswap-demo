@@ -46,7 +46,6 @@ replace _ALLOWED_METADATA = {'@key', '@key:external'} in class cdm_base_staticda
 the program will create a json file with the business events
 '''
 
-
 import datetime
 from decimal import Decimal
 from pathlib import Path
@@ -113,35 +112,44 @@ TRADE_TYPE = StrWithMeta("New Booking")
 PRODUCT_ID = StrWithMeta("FX_SWAP")
 EXECUTION_TYPE = StrWithMeta("OFF_FACILITY")
 EXECUTION_ENTITY = StrWithMeta("OTC")
-TRADE_DATE = datetime.datetime(2025, 10, 30) 
+TRADE_DATE = datetime.datetime(2025, 10, 30)
 SPOT_SETTLE_DATE = datetime.datetime(2025, 11, 4)
-FWD_SETTLE_DATE = datetime.datetime(2025,11,28)
-SPOT_EU_AMT = 2796548.83 
-FWD_EU_AMT = 2799994.17 
-JPY_AMT_SPOT = 500000000 
-JPY_AMT_FWD = 500000000 
+FWD_SETTLE_DATE = datetime.datetime(2025, 11, 28)
+SPOT_EU_AMT = 2796548.83
+FWD_EU_AMT = 2799994.17
+JPY_AMT_SPOT = 500000000
+JPY_AMT_FWD = 500000000
 PARTY1_NAME = StrWithMeta("BigBank")
-PARTY2_NAME = StrWithMeta("Client") 
-SPOT_FX_RATE = 178.7918 
-FWD_FX_RATE = 178.5718 
+PARTY2_NAME = StrWithMeta("Client")
+SPOT_FX_RATE = 178.7918
+FWD_FX_RATE = 178.5718
 CURRENCY = StrWithMeta("EURJPY")
 BASE_FX = StrWithMeta("EUR")
 TRANSACTION_UTI = StrWithMeta("xxx-abcdef")
 
+
 def create_party(name: StrWithMeta):
     '''create a party'''
-    return Party(name=name,
-                 partyId=[PartyIdentifier(identifier=name, identifierType=None)],
-                 businessUnit=None,
-                 person=None,
-                 personRole=None,
-                 account=None,
-                 contactInformation=None)
+    return Party(
+        name=name,
+        partyId=[PartyIdentifier(identifier=name, identifierType=None)],
+        businessUnit=None,
+        person=None,
+        personRole=None,
+        account=None,
+        contactInformation=None)
 
-def create_price_quantity(fx_rate: float,fx_quantity: float) -> PriceQuantity:
+
+def create_price_quantity(fx_rate: float, fx_quantity: float) -> PriceQuantity:
     '''create price quantity'''
-    unit=UnitType(currency=BASE_FX,capacityUnit=None,weatherUnit=None,financialUnit=None)
-    per_unit_of=UnitType(currency=BASE_FX, capacityUnit= None, weatherUnit=None,financialUnit=None)
+    unit = UnitType(currency=BASE_FX,
+                    capacityUnit=None,
+                    weatherUnit=None,
+                    financialUnit=None)
+    per_unit_of = UnitType(currency=BASE_FX,
+                           capacityUnit=None,
+                           weatherUnit=None,
+                           financialUnit=None)
     price = Price(value=Decimal(fx_rate),
                   unit=unit,
                   datedValue=None,
@@ -151,7 +159,7 @@ def create_price_quantity(fx_rate: float,fx_quantity: float) -> PriceQuantity:
                   arithmeticOperator=None,
                   cashPrice=None,
                   priceExpression=PriceExpressionEnum.ABSOLUTE_TERMS)
-    quantity = NonNegativeQuantitySchedule(value = Decimal(fx_quantity),
+    quantity = NonNegativeQuantitySchedule(value=Decimal(fx_quantity),
                                            unit=per_unit_of,
                                            datedValue=None,
                                            multiplier=None,
@@ -163,10 +171,18 @@ def create_price_quantity(fx_rate: float,fx_quantity: float) -> PriceQuantity:
     validate_pydantic_object(price_quantity)
     return price_quantity
 
-def create_resolvable_price_quantity(fx_rate: float,fx_quantity: float)-> ResolvablePriceQuantity:
+
+def create_resolvable_price_quantity(
+        fx_rate: float, fx_quantity: float) -> ResolvablePriceQuantity:
     '''create the price quantity from the rate and fx quantity'''
-    unit=UnitType(currency=CURRENCY,capacityUnit=None,weatherUnit=None,financialUnit=None)
-    per_unit_of=UnitType(currency=BASE_FX, capacityUnit= None, weatherUnit=None,financialUnit=None)
+    unit = UnitType(currency=CURRENCY,
+                    capacityUnit=None,
+                    weatherUnit=None,
+                    financialUnit=None)
+    per_unit_of = UnitType(currency=BASE_FX,
+                           capacityUnit=None,
+                           weatherUnit=None,
+                           financialUnit=None)
 
     price = Price(value=Decimal(fx_rate),
                   unit=unit,
@@ -178,55 +194,62 @@ def create_resolvable_price_quantity(fx_rate: float,fx_quantity: float)-> Resolv
                   cashPrice=None,
                   priceExpression=PriceExpressionEnum.ABSOLUTE_TERMS)
     validate_pydantic_object(price)
-    quantity = NonNegativeQuantitySchedule(value = Decimal(fx_quantity),
+    quantity = NonNegativeQuantitySchedule(value=Decimal(fx_quantity),
                                            unit=per_unit_of,
                                            datedValue=None,
                                            multiplier=None,
                                            frequency=None)
     validate_pydantic_object(quantity)
-    price_quantity = ResolvablePriceQuantity (resolvedQuantity=None,
-                                              quantitySchedule=quantity,
-                                              quantityReference = None,
-                                              quantityMultiplier=None,
-                                              reset=None,
-                                              futureValueNotional=None,
-                                              priceSchedule=[price])
+    price_quantity = ResolvablePriceQuantity(resolvedQuantity=None,
+                                             quantitySchedule=quantity,
+                                             quantityReference=None,
+                                             quantityMultiplier=None,
+                                             reset=None,
+                                             futureValueNotional=None,
+                                             priceSchedule=[price])
     validate_pydantic_object(price_quantity)
     return price_quantity
-def create_settlement_terms(settle_date: datetime.datetime)->SettlementTerms:
+
+
+def create_settlement_terms(settle_date: datetime.datetime) -> SettlementTerms:
     '''create setttlement terms'''
-    settlement_date=SettlementDate(valueDate=settle_date,
-                                   adjustableOrRelativeDate=None,
-                                   adjustableDates=None,
-                                   businessDateRange=None,
-                                   cashSettlementBusinessDays=None,
-                                   paymentDelay=None)
-    physical_settlement_period = PhysicalSettlementPeriod(businessDaysNotSpecified = None,
-                                                          businessDays=0,maximumBusinessDays = None)
-    physical_settlement_terms = PhysicalSettlementTerms(clearedPhysicalSettlement = None,
-                                                        predeterminedClearingOrganizationParty = None,
-                                                        physicalSettlementPeriod=physical_settlement_period,
-                                                        deliverableObligations = None,
-                                                        escrow = None,
-                                                        sixtyBusinessDaySettlementCap = None)
-    settlement_terms=SettlementTerms(settlementType=SettlementTypeEnum.PHYSICAL,
-                                     transferSettlementType=None,
-                                     settlementCurrency=None, #??
-                                     settlementDate=settlement_date,
-                                     settlementCentre=None,
-                                     settlementProvision=None,
-                                     cashSettlementTerms=None,
-                                     standardSettlementStyle=None,
-                                     physicalSettlementTerms=physical_settlement_terms)
+    settlement_date = SettlementDate(valueDate=settle_date,
+                                     adjustableOrRelativeDate=None,
+                                     adjustableDates=None,
+                                     businessDateRange=None,
+                                     cashSettlementBusinessDays=None,
+                                     paymentDelay=None)
+    physical_settlement_period = PhysicalSettlementPeriod(
+        businessDaysNotSpecified=None,
+        businessDays=0,
+        maximumBusinessDays=None)
+    physical_settlement_terms = PhysicalSettlementTerms(
+        clearedPhysicalSettlement=None,
+        predeterminedClearingOrganizationParty=None,
+        physicalSettlementPeriod=physical_settlement_period,
+        deliverableObligations=None,
+        escrow=None,
+        sixtyBusinessDaySettlementCap=None)
+    settlement_terms = SettlementTerms(
+        settlementType=SettlementTypeEnum.PHYSICAL,
+        transferSettlementType=None,
+        settlementCurrency=None,  #??
+        settlementDate=settlement_date,
+        settlementCentre=None,
+        settlementProvision=None,
+        cashSettlementTerms=None,
+        standardSettlementStyle=None,
+        physicalSettlementTerms=physical_settlement_terms)
     return settlement_terms
 
-def create_settlement_payout (payer_receiver: PayerReceiver,
-                   fx_rate: float,
-                   fx_quantity: float,
-                   settle_date: datetime.datetime,
-                   observable: Observable)->Payout:
+
+def create_settlement_payout(payer_receiver: PayerReceiver, fx_rate: float,
+                             fx_quantity: float,
+                             settle_date: datetime.datetime,
+                             observable: Observable) -> Payout:
     '''create a settlement payout - resused for spot and fwd'''
-    price_quantity = create_resolvable_price_quantity(fx_rate=fx_rate, fx_quantity=fx_quantity)
+    price_quantity = create_resolvable_price_quantity(fx_rate=fx_rate,
+                                                      fx_quantity=fx_quantity)
     settlement_terms = create_settlement_terms(settle_date=settle_date)
     underlier = Underlier(Observable=observable, Product=None)
     validate_pydantic_object(underlier)
@@ -250,17 +273,23 @@ def create_settlement_payout (payer_receiver: PayerReceiver,
     validate_pydantic_object(payout)
     return payout
 
+
 def create_trade_business_event() -> BusinessEvent:
     '''create a business event to match the trade'''
-    trade_id = TradeIdentifier(assignedIdentifier=[AssignedIdentifier(identifier=TRANSACTION_UTI, version=None)],
-                               identifierType=TradeIdentifierTypeEnum.UNIQUE_TRANSACTION_IDENTIFIER,
-                               issuerReference=None,
-                               issuer="NA")
+    trade_id = TradeIdentifier(
+        assignedIdentifier=[
+            AssignedIdentifier(identifier=TRANSACTION_UTI, version=None)
+        ],
+        identifierType=TradeIdentifierTypeEnum.UNIQUE_TRANSACTION_IDENTIFIER,
+        issuerReference=None,
+        issuer="NA")
     validate_pydantic_object(trade_id)
-    product_id = ProductIdentifier(identifier=PRODUCT_ID, source=ProductIdTypeEnum.NAME)
+    product_id = ProductIdentifier(identifier=PRODUCT_ID,
+                                   source=ProductIdTypeEnum.NAME)
     validate_pydantic_object(product_id)
-    assinged_id = CommonAssetIdentifier(identifier=StrWithMeta(BASE_FX), 
-                                        identifierType=AssetIdTypeEnum.CURRENCY_CODE)
+    assinged_id = CommonAssetIdentifier(
+        identifier=StrWithMeta(BASE_FX),
+        identifierType=AssetIdTypeEnum.CURRENCY_CODE)
     validate_pydantic_object(assinged_id)
     cash = Cash(identifier=[assinged_id],
                 taxonomy=None,
@@ -275,28 +304,34 @@ def create_trade_business_event() -> BusinessEvent:
     validate_pydantic_object(asset)
     observable = Observable(Asset=asset, Basket=None, Index=None)
     validate_pydantic_object(observable)
-    spot_payer_receiver = PayerReceiver(payer=CounterpartyRoleEnum.PARTY_1,receiver=CounterpartyRoleEnum.PARTY_2)
-    spot_payout=create_settlement_payout (payer_receiver=spot_payer_receiver,
-                                          fx_rate=SPOT_FX_RATE,
-                                          fx_quantity=SPOT_EU_AMT,
-                                          settle_date=SPOT_SETTLE_DATE,
+    spot_payer_receiver = PayerReceiver(payer=CounterpartyRoleEnum.PARTY_1,
+                                        receiver=CounterpartyRoleEnum.PARTY_2)
+    spot_payout = create_settlement_payout(payer_receiver=spot_payer_receiver,
+                                           fx_rate=SPOT_FX_RATE,
+                                           fx_quantity=SPOT_EU_AMT,
+                                           settle_date=SPOT_SETTLE_DATE,
+                                           observable=observable)
+    fwd_payer_receiver = PayerReceiver(payer=CounterpartyRoleEnum.PARTY_2,
+                                       receiver=CounterpartyRoleEnum.PARTY_1)
+    fwd_payout = create_settlement_payout(payer_receiver=fwd_payer_receiver,
+                                          fx_rate=FWD_FX_RATE,
+                                          fx_quantity=FWD_EU_AMT,
+                                          settle_date=FWD_SETTLE_DATE,
                                           observable=observable)
-    fwd_payer_receiver = PayerReceiver(payer=CounterpartyRoleEnum.PARTY_2,receiver=CounterpartyRoleEnum.PARTY_1)
-    fwd_payout=create_settlement_payout (payer_receiver=fwd_payer_receiver,
-                                         fx_rate=FWD_FX_RATE,
-                                         fx_quantity=FWD_EU_AMT,
-                                         settle_date=FWD_SETTLE_DATE,
-                                         observable=observable)
-    spot_settle_date = AdjustableDate(unadjustedDate=None,
-                                      dateAdjustments=None,
-                                      dateAdjustmentsReference=None,
-                                      adjustedDate=DateWithMeta(SPOT_SETTLE_DATE))
-    effective_date = AdjustableOrRelativeDate(adjustableDate=spot_settle_date, relativeDate=None)
-    fwd_settle_date = AdjustableDate(unadjustedDate=None,
-                                     dateAdjustments=None,
-                                     dateAdjustmentsReference=None,
-                                     adjustedDate=DateWithMeta(FWD_SETTLE_DATE))
-    termination_date=AdjustableOrRelativeDate(adjustableDate=fwd_settle_date, relativeDate=None)
+    spot_settle_date = AdjustableDate(
+        unadjustedDate=None,
+        dateAdjustments=None,
+        dateAdjustmentsReference=None,
+        adjustedDate=DateWithMeta(SPOT_SETTLE_DATE))
+    effective_date = AdjustableOrRelativeDate(adjustableDate=spot_settle_date,
+                                              relativeDate=None)
+    fwd_settle_date = AdjustableDate(
+        unadjustedDate=None,
+        dateAdjustments=None,
+        dateAdjustmentsReference=None,
+        adjustedDate=DateWithMeta(FWD_SETTLE_DATE))
+    termination_date = AdjustableOrRelativeDate(adjustableDate=fwd_settle_date,
+                                                relativeDate=None)
     economic_terms = EconomicTerms(effectiveDate=effective_date,
                                    terminationDate=termination_date,
                                    dateAdjustments=None,
@@ -306,104 +341,130 @@ def create_trade_business_event() -> BusinessEvent:
                                    nonStandardisedTerms=None,
                                    collateral=None)
     validate_pydantic_object(economic_terms)
-    taxonomy = [ProductTaxonomy(source=TaxonomySourceEnum.ISDA,
-                                value=None,
-                                primaryAssetClass=None,
-                                secondaryAssetClass=None,
-                                productQualifier="ForeignExchange_Spot_Forward")]
-    product = NonTransferableProduct (identifier=None, taxonomy = taxonomy,economicTerms = economic_terms)
+    taxonomy = [
+        ProductTaxonomy(source=TaxonomySourceEnum.ISDA,
+                        value=None,
+                        primaryAssetClass=None,
+                        secondaryAssetClass=None,
+                        productQualifier="ForeignExchange_Spot_Forward")
+    ]
+    product = NonTransferableProduct(identifier=None,
+                                     taxonomy=taxonomy,
+                                     economicTerms=economic_terms)
     validate_pydantic_object(product)
-    execution_details = ExecutionDetails(executionType=ExecutionTypeEnum[EXECUTION_TYPE],
-                                         executionVenue=LegalEntity(entityId=[EXECUTION_ENTITY], name=EXECUTION_ENTITY),
-                                         packageReference=None)
+    execution_details = ExecutionDetails(
+        executionType=ExecutionTypeEnum[EXECUTION_TYPE],
+        executionVenue=LegalEntity(entityId=[EXECUTION_ENTITY],
+                                   name=EXECUTION_ENTITY),
+        packageReference=None)
     validate_pydantic_object(execution_details)
-    spot_price_quantity = create_price_quantity(fx_rate=SPOT_FX_RATE,fx_quantity=SPOT_EU_AMT)
-    fwd_price_quantity = create_price_quantity(fx_rate=FWD_FX_RATE,fx_quantity=FWD_EU_AMT)
+    spot_price_quantity = create_price_quantity(fx_rate=SPOT_FX_RATE,
+                                                fx_quantity=SPOT_EU_AMT)
+    fwd_price_quantity = create_price_quantity(fx_rate=FWD_FX_RATE,
+                                               fx_quantity=FWD_EU_AMT)
 
+    parties = [create_party(PARTY1_NAME), create_party(PARTY2_NAME)]
     party_roles = [
-        PartyRole(partyReference=create_party(PARTY1_NAME),
+        PartyRole(partyReference=parties[0],
                   role=PartyRoleEnum.BUYER,
                   ownershipPartyReference=None),
-        PartyRole(partyReference=create_party(PARTY2_NAME),
+        PartyRole(partyReference=parties[1],
                   role=PartyRoleEnum.SELLER,
                   ownershipPartyReference=None)
-                   ]
-    validate_pydantic_list (party_roles)
+    ]
+    validate_pydantic_list(party_roles)
 
     counterparties = [
-        Counterparty(role=CounterpartyRoleEnum.PARTY_1,partyReference=create_party(PARTY1_NAME)),
-        Counterparty(role=CounterpartyRoleEnum.PARTY_2,partyReference=create_party(PARTY2_NAME))
-        ]
+        Counterparty(role=CounterpartyRoleEnum.PARTY_1,
+                     partyReference=parties[0]),
+        Counterparty(role=CounterpartyRoleEnum.PARTY_2,
+                     partyReference=parties[1])
+    ]
     validate_pydantic_list(counterparties)
-    execution_instruction = ExecutionInstruction(product=product,
-                                                 priceQuantity=[spot_price_quantity,fwd_price_quantity],
-                                                 counterparty=counterparties,
-                                                 parties=[create_party(PARTY1_NAME), create_party(PARTY2_NAME)],
-                                                 partyRoles=party_roles,
-                                                 executionDetails=execution_details,
-                                                 tradeDate=DateWithMeta(TRADE_DATE),
-                                                 tradeIdentifier=[trade_id],
-                                                 ancillaryParty=None,
-                                                 tradeTime=None,
-                                                 collateral=None,
-                                                 lotIdentifier=None)
+    execution_instruction = ExecutionInstruction(
+        product=product,
+        priceQuantity=[spot_price_quantity, fwd_price_quantity],
+        counterparty=counterparties,
+        parties=parties,
+        partyRoles=party_roles,
+        executionDetails=execution_details,
+        tradeDate=DateWithMeta(TRADE_DATE),
+        tradeIdentifier=[trade_id],
+        ancillaryParty=None,
+        tradeTime=None,
+        collateral=None,
+        lotIdentifier=None)
     validate_pydantic_object(execution_instruction)
-    primitive_instruction = PrimitiveInstruction(contractFormation = None,
-                                                 execution=execution_instruction,
-                                                 exercise = None,
-                                                 partyChange = None,
-                                                 quantityChange = None,
-                                                 reset = None,
-                                                 split  = None,
-                                                 termsChange = None,
-                                                 transfer = None,
-                                                 indexTransition = None,
-                                                 stockSplit = None,
-                                                 observation = None,
-                                                 valuation = None)
+    primitive_instruction = PrimitiveInstruction(
+        contractFormation=None,
+        execution=execution_instruction,
+        exercise=None,
+        partyChange=None,
+        quantityChange=None,
+        reset=None,
+        split=None,
+        termsChange=None,
+        transfer=None,
+        indexTransition=None,
+        stockSplit=None,
+        observation=None,
+        valuation=None)
     validate_pydantic_object(primitive_instruction)
-    instruction = Instruction(primitiveInstruction=primitive_instruction, before=None)
+    instruction = Instruction(primitiveInstruction=primitive_instruction,
+                              before=None)
     validate_pydantic_object(instruction)
-    event = BusinessEvent(intent = None,
-                          corporateActionIntent  = None,
+    event = BusinessEvent(intent=None,
+                          corporateActionIntent=None,
                           eventDate=TRADE_DATE,
                           effectiveDate=TRADE_DATE,
-                          packageInformation = None,
+                          packageInformation=None,
                           instruction=[instruction],
-                          eventQualifier = None,
-                          after = None)
+                          eventQualifier=None,
+                          after=None)
     # event.after would be set by executing the deacti
     return event if validate_pydantic_object(event) else None
 
-def extract_info_from_event (event: BusinessEvent) -> dict:
+
+def extract_info_from_event(event: BusinessEvent) -> dict:
     '''extract info from an event'''
     results = {}
-    if event is not None and event.instruction and getattr(event, "instruction") and len(event.instruction) > 0 and event.instruction[0].primitiveInstruction:
-        execution_instruction = event.instruction[0].primitiveInstruction.execution
+    if event is not None and event.instruction and getattr(
+            event, "instruction") and len(
+                event.instruction
+            ) > 0 and event.instruction[0].primitiveInstruction:
+        execution_instruction = event.instruction[
+            0].primitiveInstruction.execution
         if execution_instruction:
             results['trade_date'] = execution_instruction.tradeDate
-            results['trade_id'] = Identifier(issuer=execution_instruction.tradeIdentifier[0].issuer,
-                                            assignedIdentifier=execution_instruction.tradeIdentifier[0].assignedIdentifier,
-                                            issuerReference=execution_instruction.tradeIdentifier[0].issuerReference)
+            results['trade_id'] = Identifier(
+                issuer=execution_instruction.tradeIdentifier[0].issuer,
+                assignedIdentifier=execution_instruction.tradeIdentifier[0].
+                assignedIdentifier,
+                issuerReference=execution_instruction.tradeIdentifier[0].
+                issuerReference)
             results['price_quantity'] = execution_instruction.priceQuantity
             results['product'] = execution_instruction.product
             results['counterparty'] = execution_instruction.counterparty
             results['tradeIdentifier'] = execution_instruction.tradeIdentifier
             results['parties'] = execution_instruction.parties
             results['partyRoles'] = execution_instruction.partyRoles,
-            results['executionDetails'] = execution_instruction.executionDetails
-            results['economic_terms'] = execution_instruction.product.economicTerms
-            
+            results[
+                'executionDetails'] = execution_instruction.executionDetails
+            results[
+                'economic_terms'] = execution_instruction.product.economicTerms
+
     return results
 
-def validate_pydantic_list (list_of_objs) -> bool:
+
+def validate_pydantic_list(list_of_objs) -> bool:
     '''validate a list of pydantic objects'''
     result = True
     for o in list_of_objs:
         result = result and validate_pydantic_object(o)
     return result
 
-def validate_pydantic_object (obj) -> bool:
+
+def validate_pydantic_object(obj) -> bool:
     '''validate pydantic objects'''
     try:
         obj.validate_model()
@@ -415,38 +476,70 @@ def validate_pydantic_object (obj) -> bool:
         print(e)
         return False
 
-def main ():
+
+def main():
     '''main'''
     print('creating business event')
     event = create_trade_business_event()
     print('writing business event')
     event_json = event.rune_serialize(indent=3)
-    Path("fx_swap_business_event.json").write_text(event_json, encoding="utf-8")
+    Path("fx_swap_business_event.json").write_text(event_json,
+                                                   encoding="utf-8")
     BaseDataClass.rune_deserialize(event_json, strict=False)
     results = extract_info_from_event(event)
     print('trade date:', results['trade_date'])
-    print('effective date:', results['economic_terms'].effectiveDate.adjustableDate.adjustedDate)
-    print('termination date:', results['economic_terms'].terminationDate.adjustableDate.adjustedDate)
-    print('payer receiver 0:',results['economic_terms'].payout[0].SettlementPayout.payerReceiver.payer)
-    print('payer receiver 1:',results['economic_terms'].payout[1].SettlementPayout.payerReceiver.payer)
-    pay_idx = 0 if results['economic_terms'].payout[0].SettlementPayout.payerReceiver.payer == CounterpartyRoleEnum.PARTY_1 else 1
+    print('effective date:',
+          results['economic_terms'].effectiveDate.adjustableDate.adjustedDate)
+    print(
+        'termination date:',
+        results['economic_terms'].terminationDate.adjustableDate.adjustedDate)
+    print(
+        'payer receiver 0:', results['economic_terms'].payout[0].
+        SettlementPayout.payerReceiver.payer)
+    print(
+        'payer receiver 1:', results['economic_terms'].payout[1].
+        SettlementPayout.payerReceiver.payer)
+    pay_idx = 0 if results['economic_terms'].payout[
+        0].SettlementPayout.payerReceiver.payer == CounterpartyRoleEnum.PARTY_1 else 1
     rec_idx = 1 if pay_idx == 0 else 0
-    print('first leg payer: ', results['parties'][pay_idx].name, 'receiver:', results['parties'][rec_idx].name)
-    print('first leg exchange rate:', f"{results['economic_terms'].payout[0].SettlementPayout.priceQuantity.priceSchedule[0].value:.3f}",
-          ' currency:',results['economic_terms'].payout[0].SettlementPayout.priceQuantity.priceSchedule[0].unit.currency,
-          ' base currency:',results['economic_terms'].payout[0].SettlementPayout.priceQuantity.priceSchedule[0].perUnitOf.currency)
-    print('first leg amt:',f"{results['economic_terms'].payout[0].SettlementPayout.priceQuantity.quantitySchedule.value:,.2f}",
-          ' currency:', results['economic_terms'].payout[0].SettlementPayout.priceQuantity.quantitySchedule.unit.currency)
-    print('first leg settlement date:', results['economic_terms'].payout[0].SettlementPayout.settlementTerms.settlementDate.valueDate)
-    pay_idx = 0 if results['economic_terms'].payout[1].SettlementPayout.payerReceiver.payer == 'Payer1' else 1
+    print('first leg payer: ', results['parties'][pay_idx].name, 'receiver:',
+          results['parties'][rec_idx].name)
+    print(
+        'first leg exchange rate:',
+        f"{results['economic_terms'].payout[0].SettlementPayout.priceQuantity.priceSchedule[0].value:.3f}",
+        ' currency:', results['economic_terms'].payout[0].SettlementPayout.
+        priceQuantity.priceSchedule[0].unit.currency, ' base currency:',
+        results['economic_terms'].payout[0].SettlementPayout.priceQuantity.
+        priceSchedule[0].perUnitOf.currency)
+    print(
+        'first leg amt:',
+        f"{results['economic_terms'].payout[0].SettlementPayout.priceQuantity.quantitySchedule.value:,.2f}",
+        ' currency:', results['economic_terms'].payout[0].SettlementPayout.
+        priceQuantity.quantitySchedule.unit.currency)
+    print(
+        'first leg settlement date:', results['economic_terms'].payout[0].
+        SettlementPayout.settlementTerms.settlementDate.valueDate)
+    pay_idx = 0 if results['economic_terms'].payout[
+        1].SettlementPayout.payerReceiver.payer == 'Payer1' else 1
     rec_idx = 1 if pay_idx == 0 else 0
-    print('second leg payer: ', results['parties'][pay_idx].name, 'receiver:', results['parties'][rec_idx].name)
-    print('second leg exchange rate:', f"{results['economic_terms'].payout[1].SettlementPayout.priceQuantity.priceSchedule[0].value:.3f}",
-          ' currency:',results['economic_terms'].payout[1].SettlementPayout.priceQuantity.priceSchedule[0].unit.currency,
-          ' base currency:',results['economic_terms'].payout[1].SettlementPayout.priceQuantity.priceSchedule[0].perUnitOf.currency)
-    print('second leg amt:',f"{results['economic_terms'].payout[1].SettlementPayout.priceQuantity.quantitySchedule.value:,.2f}",
-          ' currency:', results['economic_terms'].payout[1].SettlementPayout.priceQuantity.quantitySchedule.unit.currency)
-    print('second leg settlement date:', results['economic_terms'].payout[1].SettlementPayout.settlementTerms.settlementDate.valueDate)
+    print('second leg payer: ', results['parties'][pay_idx].name, 'receiver:',
+          results['parties'][rec_idx].name)
+    print(
+        'second leg exchange rate:',
+        f"{results['economic_terms'].payout[1].SettlementPayout.priceQuantity.priceSchedule[0].value:.3f}",
+        ' currency:', results['economic_terms'].payout[1].SettlementPayout.
+        priceQuantity.priceSchedule[0].unit.currency, ' base currency:',
+        results['economic_terms'].payout[1].SettlementPayout.priceQuantity.
+        priceSchedule[0].perUnitOf.currency)
+    print(
+        'second leg amt:',
+        f"{results['economic_terms'].payout[1].SettlementPayout.priceQuantity.quantitySchedule.value:,.2f}",
+        ' currency:', results['economic_terms'].payout[1].SettlementPayout.
+        priceQuantity.quantitySchedule.unit.currency)
+    print(
+        'second leg settlement date:', results['economic_terms'].payout[1].
+        SettlementPayout.settlementTerms.settlementDate.valueDate)
+
 
 if __name__ == "__main__":
     main()
